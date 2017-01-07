@@ -58,7 +58,7 @@ $(function () {
      * hidden by default. 
      */
     it('Menu starts hidden', function () {
-      expect($('body').attr('class')).toBe("menu-hidden");
+      expect($('body').hasClass('menu-hidden')).toBe(true);
     });
 
 
@@ -68,11 +68,11 @@ $(function () {
      * clicked and does it hide when clicked again.
      */
     it('Menu reveals and hides', function () {
-      expect($('body').attr('class')).toBe("menu-hidden");
+      expect($('body').hasClass('menu-hidden')).toBe(true);
       $('.menu-icon-link').click();
-      expect($('body').attr('class')).toBe("");
+      expect($('body').hasClass('menu-hidden')).toBe(false);
       $('.menu-icon-link').click();
-      expect($('body').attr('class')).toBe("menu-hidden");
+      expect($('body').hasClass('menu-hidden')).toBe(true);
     });
   });
 
@@ -80,9 +80,7 @@ $(function () {
 
     //For asynchronous function
     beforeEach(function (done) {
-      loadFeed(0, function () {
-        done();
-      });
+      loadFeed(0, done);
     });
 
     /* Ensures when the loadFeed
@@ -98,10 +96,18 @@ $(function () {
 
   describe('New Feed Selection', function () {
 
+    var index0Html;
+    var index1Html;
     //For asynchronous function
+    //Fills variables with the content of .feed for two 
+    //different loadFeed calls
     beforeEach(function (done) {
       loadFeed(0, function () {
-        done();
+        index0Html = $('.feed').html();
+        loadFeed(1, function () {
+          index1Html = $('.feed').html();
+          done();
+        });
       });
     });
 
@@ -109,7 +115,7 @@ $(function () {
      * by the loadFeed function that the content actually changes.
      */
     it('should add elements', function (done) {
-      expect($('.feed').children().length).not.toBe(0);
+      expect(index1Html).not.toBe(index0Html);
       done();
     });
   });
